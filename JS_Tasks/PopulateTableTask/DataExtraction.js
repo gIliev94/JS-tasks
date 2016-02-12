@@ -1,4 +1,4 @@
-﻿var content = [
+﻿var objects = [
     { 'ID': 2, 'First Name': 'Martin', 'Last Name': 'Chaov', 'Occupation': 'Designer' },
     { 'ID': 6, 'First Name': 'Lyubomir', 'Last Name': 'Todorov', 'Occupation': 'Front-end developer' },
     { 'ID': 1, 'First Name': 'Daniela', 'Last Name': 'Popova', 'Occupation': 'Front-end developer' },
@@ -25,63 +25,79 @@
     { 'ID': 23, 'First Name': 'Diana', 'Last Name': 'Karcheva', 'Occupation': 'C# .Net developer' },
     { 'ID': 24, 'First Name': 'Miroslav', 'Last Name': 'Uzunov', 'Occupation': 'DBA' },
     { 'ID': 25, 'First Name': 'Ivan', 'Last Name': 'Tsatsarov', 'Occupation': 'DBA' },
-    { 'ID': 50, 'First Name': 'Cool', 'Last Name': 'Dude' }
 ];
 
-// All keys
-var allKeys = [];
+// Gets all the unique attributes
+function extractObjectAttributes() {
+    console.log('OBJECTS:');
 
-// All UNIQUE keys
-var uniqueKeys = [];
+    for (var i = 0; i < objects.length; i++) {
+        allAttributes = Object.keys(objects[i]);
 
-// Actual execution
-extractKeys();
-extractDataToTable();
+        console.log(JSON.stringify(objects[i]));
 
-
-// Gets all the unique keys
-function extractKeys() {
-
-    for (var i = 0; i < content.length; i++) {
-        allKeys = Object.keys(content[i]);
-        console.log(allKeys);
-
-        for (var j = 0; j < allKeys.length; j++) {
-            if (uniqueKeys.indexOf(allKeys[j]) == -1) {
-                uniqueKeys.push(allKeys[j]);
+        for (var j = 0; j < allAttributes.length; j++) {
+            if (uniqueAttributes.indexOf(allAttributes[j]) == -1) {
+                uniqueAttributes.push(allAttributes[j]);
             }
         }
 
     }
-    //console.log(uniqueKeys);
+
+    console.log('\n');
+    console.log('UNIQUE ATTRIBUTES:');
+    console.log(JSON.stringify(uniqueAttributes));
 }
 
-// Creates table with data from both the source array and the keys array
-function extractDataToTable() {
-
+// Creates table with data from both the source array and the unique attributes array
+function generateTableWithData() {
     var container = document.createElement('div');
     var tableBody = document.createElement('table');
 
-    for (var t = 0; t < content.length; t++) {
-        var currentObject = content[t];
+    for (var i = 0; i < objects.length; i++) {
+        var currentObject = objects[i];
         var tableRow = document.createElement('tr');
 
-        for (var k = 0; k < uniqueKeys.length; k++) {
-
+        for (var j = 0; j < uniqueAttributes.length; j++) {
             var tableCell = document.createElement('td');
-            tableCell.innerHTML = currentObject[uniqueKeys[k]];
+            tableCell.innerHTML = currentObject[uniqueAttributes[j]];
 
-            // Check for available values of the given key
-            if (currentObject[uniqueKeys[k]] === undefined) {
+            // Check for available value for a given attribute
+            if (currentObject[uniqueAttributes[j]] === undefined) {
                 tableCell.innerHTML = " ";
             }
 
             tableRow.appendChild(tableCell);
             tableBody.appendChild(tableRow);
-
         }
-        //console.log(currentObject);
+
     }
     container.appendChild(tableBody);
+
+    console.log('\n');
+    console.log('RESULTING TABLE: SORTED by ID ascending');
+    console.log('ROWS: ' + objects.length);
+    console.log('COLUMNS: ' + uniqueAttributes.length);
+
     return document.body.appendChild(container);
 }
+
+// Compares the IDs of two objects
+function compareId(o1,o2) {
+    if (o1.ID < o2.ID)
+        return -1;
+    else if (o1.ID > o2.ID)
+        return 1;
+    else
+        return 0;
+}
+
+// Actual execution path
+var allAttributes = [];
+var uniqueAttributes = [];
+
+extractObjectAttributes();
+
+objects.sort(compareId);
+
+generateTableWithData();

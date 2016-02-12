@@ -1,44 +1,11 @@
-﻿function createCounter() {
-    var counter = new Counter();
-    return console.log('New counter created!');
-}
-
+﻿// Implementation of a constructor.
 function Counter() {
     this.counterInterval;
+
     return this.init();
 }
 
-Counter.prototype.getValue = function () {
-    return parseInt(this.inputField.value);
-};
-
-Counter.prototype.setValue = function (value) {
-    this.inputField.value = value;
-    return this;
-};
-
-Counter.prototype.increment = function () {
-    this.setValue(this.sum(parseInt(this.getValue() || 0), 1));
-    return this;
-};
-
-Counter.prototype.sum = function (num1, num2) {
-    if (isNaN(num1) || isNaN(num2)) {
-        console.log('Invalid input!');
-    }
-    return num1 + num2;
-};
-
-Counter.prototype.stop = function stop() {
-    clearInterval(this.counterInterval);
-    return console.log('Counter stopped!');
-};
-
-Counter.prototype.start = function () {
-    this.counterInterval = setInterval(this.increment.bind(this), 1000);
-    return console.log('Counter started!');
-};
-
+// Initializes the counter by creating/visualizing the HTML elements.
 Counter.prototype.init = function () {
     this.createContent();
     this.appendContent();
@@ -46,6 +13,7 @@ Counter.prototype.init = function () {
     return this;
 };
 
+// Generates HTML elements that build a counter. 
 Counter.prototype.createContent = function () {
     this.inputField = document.createElement('input');
     this.inputField.type = 'text';
@@ -61,29 +29,86 @@ Counter.prototype.createContent = function () {
     return this;
 };
 
+// Appends generated HTML elements to the master container.
 Counter.prototype.appendContent = function () {
-    this.contentContainer = document.getElementById('container');
+    this.masterContainer = document.getElementById('container');
 
-    this.contentContainer.appendChild(this.inputField);
-    this.contentContainer.appendChild(this.startButton);
-    this.contentContainer.appendChild(this.stopButton);
-    this.contentContainer.appendChild(this.lineBreaker);
+    this.masterContainer.appendChild(this.inputField);
+    this.masterContainer.appendChild(this.startButton);
+    this.masterContainer.appendChild(this.stopButton);
+    this.masterContainer.appendChild(this.lineBreaker);
 
-    this.contentContainer.addEventListener('click', this.clickHandler.bind(this));
+    this.masterContainer.addEventListener('click', this.clickHandler.bind(this));
 
     return this;
 };
 
-Counter.prototype.clickHandler = function (e) {
-    this.clickedItem = e.target;
+// Handles both the start and the stop button clicks.
+Counter.prototype.clickHandler = function (event) {
+    this.clickedButton= event.target;
 
-    if (this.clickedItem == this.startButton) {
+    if (this.clickedButton == this.startButton) {
+        console.log('Starting the counter...');
         this.start();
     }
 
-    if (this.clickedItem == this.stopButton) {
+    if (this.clickedButton == this.stopButton) {
+        console.log('Stopping the counter...');
         this.stop();
     }
 
-    return this.clickedItem;
+    return this.clickedButton;
 };
+
+// Starts the counting
+Counter.prototype.start = function () {
+    this.counterInterval = setInterval(this.increment.bind(this), 1000);
+    console.log('Counting interval: ' + this.counterInterval + ' sec');
+    console.log('Counter started!');
+
+    return this;
+};
+
+// Stops the counting
+Counter.prototype.stop = function stop() {
+    clearInterval(this.counterInterval);
+    console.log('Stop time: ' + this.inputField.value);
+    console.log('Counter stopped!');
+
+    return this;
+};
+
+// Incrementing/counting function
+Counter.prototype.increment = function () {
+    this.currentValue = parseInt(this.getValue() || 0);
+    this.nextValue = this.sum(this.currentValue,1);
+    this.setValue(this.nextValue);
+
+    return this;
+};
+
+// Implementation for incrementing.
+Counter.prototype.sum = function (value, step) {
+    console.log(value + step);
+
+    return value + step;
+};
+
+// Standart getter.
+Counter.prototype.getValue = function () {
+    return parseInt(this.inputField.value);
+};
+
+// Standart setter.
+Counter.prototype.setValue = function (value) {
+    this.inputField.value = value;
+
+    return this;
+};
+
+// Executor function.
+function createCounter() {
+    var counter = new Counter();
+
+    return console.log('New counter created!');
+}
